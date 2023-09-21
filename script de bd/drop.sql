@@ -1,0 +1,10 @@
+drop table categoria_subcategoria;
+drop table categoria;
+drop table especificacion;
+drop table general;
+drop table general_categoria;
+drop table producto;
+drop table producto_categoria;
+drop table producto_general;
+drop table producto_subcategoria;
+drop table subcategoria;
