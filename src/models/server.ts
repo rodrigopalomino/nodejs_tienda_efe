@@ -1,13 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { router } from "../routes/index";
-
 import { Categoria } from "./categoria.model";
 import { Producto } from "./producto.model";
-import { Especificacion } from "./especificacion.model";
-import { General } from "./general.model";
-import { Subcategoria } from "./subcategoria.model";
-import { General_Categoria } from "./general_categoria.model";
+import { Categoria_Producto } from "./categoria_producto.model";
 
 class Server {
   app: express.Application;
@@ -41,12 +37,9 @@ class Server {
   async dbConnection() {
     try {
       console.log("exito en la conexion");
-      await General.sync();
       await Categoria.sync();
-      await Subcategoria.sync();
       await Producto.sync();
-      await Especificacion.sync();
-      await General_Categoria.sync();
+      await Categoria_Producto.sync();
     } catch (error) {
       console.log(error);
     }

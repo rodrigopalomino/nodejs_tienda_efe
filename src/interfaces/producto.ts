@@ -1,8 +1,12 @@
 export interface Producto {
   producto_id?: number;
+  sku: string;
   marca: string;
   nombre: string;
-  precio: number;
+  precio_normal: number;
+  precio_rebajado: number;
+  stock: number;
   descripcion: string;
-  imagen: string;
+  especificaciones: Record<string, any>;
+  imagenes: string[];
 }

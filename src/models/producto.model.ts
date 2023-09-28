@@ -1,19 +1,22 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/connection";
-import { Producto as ProductoInterface } from "../interfaces/producto";
-import { Categoria } from "./categoria.model";
+import { Producto as ProductoInteface } from "../interfaces/producto";
 
 export interface ProductoModel
-  extends Model<ProductoInterface>,
-    ProductoInterface {}
+  extends Model<ProductoInteface>,
+    ProductoInteface {}
 
 export const Producto = sequelize.define<ProductoModel>(
-  "producto",
+  "productos",
   {
     producto_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    sku: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     marca: {
       type: DataTypes.STRING,
@@ -23,18 +26,33 @@ export const Producto = sequelize.define<ProductoModel>(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    precio: {
-      type: DataTypes.DECIMAL(7, 2),
+    precio_normal: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    precio_rebajado: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    stock: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     descripcion: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
-    imagen: {
-      type: DataTypes.STRING,
+    especificaciones: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    imagenes: {
+      type: DataTypes.JSON,
       allowNull: false,
     },
   },
-  { freezeTableName: true }
+  {
+    freezeTableName: true,
+    timestamps: false,
+  }
 );

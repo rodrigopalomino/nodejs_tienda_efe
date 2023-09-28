@@ -1,118 +1,45 @@
--- -----------------------------------------------------
--- Table `efe`.`General`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `efe`.`General` (
-  `general_id` INT NULL AUTO_INCREMENT,
-  `general` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`general_id`));
+CREATE TABLE IF NOT EXISTS `categorias` (
+  `categoria_id` INTEGER auto_increment,
+  `nombre` VARCHAR(255) NOT NULL,
+  `parent_id` INTEGER,
+  PRIMARY KEY (`categoria_id`),
+  FOREIGN KEY (`parent_id`) REFERENCES `categorias` (`categoria_id`) 
+);
 
-
--- -----------------------------------------------------
--- Table `efe`.`Categoria`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `efe`.`Categoria` (
-  `categoria_id` INT NULL AUTO_INCREMENT,
-  `categoria` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`categoria_id`));
-
-
-
--- -----------------------------------------------------
--- Table `efe`.`Subcategoria`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `efe`.`Subcategoria` (
-  `subcategoria_id` INT NULL AUTO_INCREMENT,
-  `subcategoria` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`subcategoria_id`));
-
-
--- -----------------------------------------------------
--- Table `efe`.`Producto`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `efe`.`Producto` (
-  `producto_id` INT NULL AUTO_INCREMENT,
-  `marca` VARCHAR(45) NOT NULL,
-  `nombre` VARCHAR(45) NOT NULL,
-  `precio` DECIMAL(7,2) NOT NULL,
-  `descripcion` VARCHAR(45) NOT NULL,
-  `imagen` VARCHAR(45) NOT NULL,
-  `especificacion_id` INT NOT NULL,
-  PRIMARY KEY (`producto_id`));
-
-
--- -----------------------------------------------------
--- Table `efe`.`General_Categoria`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `efe`.`General_Categoria` (	
-	`general_id` INT NOT NULL,
-	`categoria_id` INT NOT NULL,
-    primary key(`general_id`,`categoria_id`),
-    foreign key(`general_id`) references `General` (`general_id`),
-    foreign key(`categoria_id`) references `Categoria` (`categoria_id`)
+CREATE TABLE IF NOT EXISTS `productos` (
+  `producto_id` INTEGER auto_increment,
+  `sku` VARCHAR(255) NOT NULL,
+  `marca` VARCHAR(255) NOT NULL,
+  `nombre` VARCHAR(255) NOT NULL,
+  `precio_normal` INTEGER NOT NULL,
+  `precio_rebajado` INTEGER DEFAULT 0,
+  `stock` INTEGER NOT NULL,
+  `descripcion` VARCHAR(255),
+  `especificaciones` JSON,
+  `imagenes` JSON NOT NULL,
+  PRIMARY KEY (`producto_id`)
 );
 
 
--- -----------------------------------------------------
--- Table `mydb`.`Categoria_Subcategoria`
--- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `categorias_productos` (
+  `categoria_id` INTEGER , 
+  `producto_id` INTEGER , 
+  PRIMARY KEY (`categoria_id`, `producto_id`), 
+  FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`categoria_id`),
+  FOREIGN KEY (`producto_id`) REFERENCES `productos` (`producto_id`)
+); 
 
-CREATE TABLE IF NOT EXISTS `efe`.`Categoria_Subcategoria` (	
-	`categoria_id` INT NOT NULL,
-	`subcategoria_id` INT NOT NULL,
-    primary key(`categoria_id`,`subcategoria_id`),
-    foreign key(`categoria_id`) references `Categoria` (`categoria_id`),
-    foreign key(`subcategoria_id`) references `Subcategoria` (`subcategoria_id`)
+
+CREATE TABLE IF NOT EXISTS `usuarios` (
+  `usuario_id` INTEGER auto_increment,
+  `nombre` VARCHAR(255) NOT NULL,
+  `apellidos` VARCHAR(255) NOT NULL,
+  `tipo_documento` INTEGER NOT NULL,
+  `num_documento` VARCHAR NOT NULL,
+  `celular` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `contraseña` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`usuario_id`),
+  FOREIGN KEY (`tipo_documento`) REFERENCES `documentos` (`documento_id`) 
 );
-
-
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Especificacion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `efe`.`Especificacion` (
-  `especificacion_id` INT NULL,
-  `especificacion` VARCHAR(45) NOT NULL,
-  `contenido` VARCHAR(45) NOT NULL,
-  `producto_id` INT NOT NULL,
-	PRIMARY KEY (`especificacion_id`),
-    FOREIGN KEY (`producto_id`)
-    REFERENCES `Producto` (`producto_id`));
-
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Producto_General`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Producto_General` (
-  `producto_id` INT NOT NULL,
-  `general_id` INT NOT NULL,
-	PRIMARY KEY (`producto_id`, `general_id`),
-    FOREIGN KEY (`producto_id`) REFERENCES `Producto` (`producto_id`),
-    FOREIGN KEY (`general_id`) REFERENCES `General` (`general_id`));
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Producto_Categoria`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Producto_Categoria` (
-  `producto_id` INT NOT NULL,
-  `categoria_id` INT NOT NULL,
-	PRIMARY KEY (`producto_id`, `categoria_id`),
-    FOREIGN KEY (`producto_id`) REFERENCES `Producto` (`producto_id`),
-    FOREIGN KEY (`categoria_id`)REFERENCES `Categoria` (`categoria_id`));
-
-
-
--- -----------------------------------------------------
--- Table `mydb`.`Producto_Subcategoria`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Producto_Subcategoria` (
-  `producto_id` INT NOT NULL,
-  `subcategoria_id` INT NOT NULL,
-	PRIMARY KEY (`producto_id`, `subcategoria_id`),
-    FOREIGN KEY (`producto_id`) REFERENCES `Producto` (`producto_id`),
-    FOREIGN KEY (`subcategoria_id`) REFERENCES `Subcategoria` (`subcategoria_id`));
-
-
 
