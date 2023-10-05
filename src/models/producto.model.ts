@@ -17,6 +17,7 @@ export const Producto = sequelize.define<ProductoModel>(
     sku: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     marca: {
       type: DataTypes.STRING,

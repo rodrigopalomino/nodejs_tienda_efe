@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import { _createProducto, _getProductos } from "../services/producto.services";
 import { Producto } from "../interfaces/producto";
+import { Categoria } from "../interfaces/categoria";
 
 export const getProductos = async (req: Request, res: Response) => {
   try {
@@ -22,43 +23,26 @@ export const createProducto = async (req: Request, res: Response) => {
     descripcion,
     especificaciones,
     imagenes,
+    categorias,
   } = req.body;
 
-  let imagenesJSON: any;
-
-  if (typeof imagenes === "string" && imagenes.trim() !== "") {
-    try {
-      imagenesJSON = JSON.parse(imagenes);
-    } catch (error) {
-      console.log("No se puedo analizar la imagen");
-      imagenesJSON = [
-        "https://www.webempresa.com/foro/wp-content/uploads/wpforo/attachments/3200/318277=80538-Sin_imagen_disponible.jpg",
-      ];
-    }
-  } else {
-    imagenesJSON = [
-      "https://www.webempresa.com/foro/wp-content/uploads/wpforo/attachments/3200/318277=80538-Sin_imagen_disponible.jpg",
-    ];
-  }
-
-  const producto: Producto = {
-    sku,
-    marca,
-    nombre,
-    precio_normal,
-    precio_rebajado,
-    stock,
-    descripcion,
-    especificaciones,
-    imagenes: imagenesJSON,
-  };
-
   try {
-    console.log(producto);
-    const response = await _createProducto(producto);
+    const producto: Producto = {
+      sku,
+      marca,
+      nombre,
+      precio_normal,
+      precio_rebajado,
+      stock,
+      descripcion,
+      especificaciones,
+      imagenes,
+    };
+
+    const response = await _createProducto(producto, categorias);
 
     res.status(response.status).json(response);
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ e: "a ocurrido un error", error });
   }
 };

@@ -4,7 +4,7 @@ export interface Producto {
   marca: string;
   nombre: string;
   precio_normal: number;
-  precio_rebajado: number;
+  precio_rebajado?: number;
   stock: number;
   descripcion: string;
   especificaciones: Record<string, any>;
