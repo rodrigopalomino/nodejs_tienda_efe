@@ -1,20 +1,20 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/connection";
-import { Categoria as CategoriaInteface } from "../interfaces/categoria";
+import { Ubicacion as UbicacionInteface } from "../interfaces/ubicacion";
 
 export interface CategoriaModel
-  extends Model<CategoriaInteface>,
-    CategoriaInteface {}
+  extends Model<UbicacionInteface>,
+    UbicacionInteface {}
 
-export const Categoria = sequelize.define<CategoriaModel>(
-  "categorias",
+export const Ubicacion = sequelize.define<CategoriaModel>(
+  "ubicaciones",
   {
-    categoria_id: {
+    ubicacion_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    nombre: {
+    ubicacion: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -22,10 +22,6 @@ export const Categoria = sequelize.define<CategoriaModel>(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    // ruta: {
-    //   type: DataTypes.STRING,
-    //   allowNull: false,
-    // },
   },
   {
     freezeTableName: true,
@@ -33,6 +29,6 @@ export const Categoria = sequelize.define<CategoriaModel>(
   }
 );
 
-Categoria.belongsTo(Categoria, {
+Ubicacion.belongsTo(Ubicacion, {
   foreignKey: "parent_id",
 });

@@ -1,16 +1,25 @@
 import { Request, Response } from "express";
-import { _getCategorias } from "../services/categoria.services";
+import {
+  _getCategorias,
+  _getSubCategorias,
+} from "../services/categoria.services";
 
 export const getCategorias = async (req: Request, res: Response) => {
+  try {
+    const response = await _getCategorias();
+    res.status(response.status).json(response.items);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+export const getSubCategorias = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const parent_id: string | null = id === "null" ? null : id;
-
   try {
-    console.log("todo bien");
-    const response = await _getCategorias(parent_id);
-    res.json(response.items);
+    const response = await _getSubCategorias(id);
+    res.status(response.status).json(response.items);
   } catch (error) {
-    console.log(error);
+    res.status(400).json(error);
   }
 };

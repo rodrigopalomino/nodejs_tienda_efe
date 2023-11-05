@@ -27,28 +27,21 @@ export const Producto = sequelize.define<ProductoModel>(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    precio_normal: {
-      type: DataTypes.INTEGER,
+    precio: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    precio_rebajado: {
+    oferta: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
-    stock: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     descripcion: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
-    especificaciones: {
-      type: DataTypes.JSON,
-      allowNull: true,
-    },
-    imagenes: {
-      type: DataTypes.JSON,
+    destacado: {
+      type: DataTypes.TINYINT,
+      defaultValue: 0,
       allowNull: false,
     },
   },

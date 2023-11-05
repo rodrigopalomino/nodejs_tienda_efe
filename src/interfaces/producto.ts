@@ -3,10 +3,38 @@ export interface Producto {
   sku: string;
   marca: string;
   nombre: string;
-  precio_normal: number;
-  precio_rebajado?: number;
-  stock: number;
+  precio: number;
+  oferta: number;
   descripcion: string;
-  especificaciones: Record<string, any>;
+  destacado: number;
+}
+
+export interface ProductoBaseDatos {
+  producto_id?: number;
+  sku: string;
+  marca: string;
+  nombre: string;
+  precio: number;
+  oferta: number;
+  descripcion?: string;
+  destacado?: number;
+  categorias: string;
+  imagenes: string;
+  especificaciones?: string;
+  campos?: string;
+}
+
+export interface FetchProducto {
+  producto_id?: number;
+  sku: string;
+  marca: string;
+  nombre: string;
+  precio: number;
+  oferta: number;
+  descripcion?: string;
+  destacado?: number;
+  categorias: string[];
   imagenes: string[];
+  especificaciones?: string[];
+  campos?: string[];
 }

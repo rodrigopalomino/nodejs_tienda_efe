@@ -1,12 +1,12 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/connection";
-import { Categorias_Productos as Categorias_Productos_Interface } from "../interfaces/categoria_producto";
+import { Categoria_Producto as Categoria_Producto_Interface } from "../interfaces/categoria_producto";
 import { Categoria } from "./categoria.model";
 import { Producto } from "./producto.model";
 
 export interface Producto_Categoria_Model
-  extends Model<Categorias_Productos_Interface>,
-    Categorias_Productos_Interface {}
+  extends Model<Categoria_Producto_Interface>,
+    Categoria_Producto_Interface {}
 
 export const Categoria_Producto = sequelize.define<Producto_Categoria_Model>(
   "categorias_productos",
