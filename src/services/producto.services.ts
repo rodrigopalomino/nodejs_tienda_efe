@@ -192,13 +192,12 @@ export const _importProdcutos = async () => {
 export const _getProductos = async (
   categoria: number,
   inicio: number,
-  final: number,
-  marca: string
+  cantidad: number
 ) => {
   try {
     const consulta = await sequelize.query(
-      "Call getProductos(:categoria, :inicio, :final, :marca)",
-      { replacements: { categoria, inicio, final, marca } }
+      "Call getProductos(:categoria, :inicio, :cantidad)",
+      { replacements: { categoria, inicio, cantidad } }
     );
     const results = consulta as ProductoBaseDatos[];
 
@@ -245,4 +244,30 @@ export const _getProductosDestacados = async (destacado: string) => {
   }
 };
 
-// export const _getPro
+export const _getProducto = async (nombre: string) => {
+  try {
+    const consulta = await sequelize.query("Call getProducto(:nombre)", {
+      replacements: { nombre },
+    });
+
+    const item = consulta[0];
+    if (!item) {
+      return { item: "no existe", status: 200 };
+    }
+
+    return { item, status: 200 };
+  } catch (error) {
+    return { error, status: 400 };
+  }
+};
+
+export const _countProducto = async (categoria: number) => {
+  try {
+    const countProductos = await Categoria_Producto.count({
+      where: { categoria_id: categoria },
+    });
+    return { countProductos, status: 200 };
+  } catch (error) {
+    return { msg: "A ocurrido un error en _getProductos", status: 400 };
+  }
+};
