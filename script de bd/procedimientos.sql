@@ -9,10 +9,11 @@ SELECT
     p.nombre,
     p.precio,
     p.oferta,
+    p.descripcion,
     GROUP_CONCAT(DISTINCT cp.categoria_id SEPARATOR ',') AS categorias,
-    GROUP_CONCAT(DISTINCT i.imagen SEPARATOR ',') AS imagenes
+	i.imagen AS imagenes
 FROM productos p
-LEFT JOIN imagenes i ON p.producto_id = i.producto_id
+LEFT JOIN imagenes i ON p.producto_id = i.producto_id AND i.tipo= "principal"
 LEFT JOIN especificaciones e ON p.producto_id = e.producto_id
 LEFT JOIN categorias_productos cp ON p.producto_id = cp.producto_id
 where cp.categoria_id=categoria
@@ -21,6 +22,32 @@ limit cantidad offset inicio;
 END; 
 //
 DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE searchProductos(in nombre int,in inicio int,in cantidad int)
+BEGIN
+
+SELECT
+    p.producto_id,
+    p.sku,
+    p.marca,
+    p.nombre,
+    p.precio,
+    p.oferta,
+    p.descripcion,
+    GROUP_CONCAT(DISTINCT cp.categoria_id SEPARATOR ',') AS categorias,
+	i.imagen AS imagenes
+FROM productos p
+LEFT JOIN imagenes i ON p.producto_id = i.producto_id AND i.tipo= "principal"
+LEFT JOIN especificaciones e ON p.producto_id = e.producto_id
+LEFT JOIN categorias_productos cp ON p.producto_id = cp.producto_id
+where p.nombre=nombre
+GROUP BY p.producto_id
+limit cantidad offset inicio;
+END; 
+//
+DELIMITER ;
+
 
 Call getProductos(2,40,11);
 
@@ -65,31 +92,36 @@ END;
 //
 DELIMITER ;
 
+
 DELIMITER //
 CREATE PROCEDURE getProducto(in nombre varchar(255))
 BEGIN
-SELECT
+SELECT 
     p.producto_id,
     p.sku,
     p.marca,
     p.nombre,
     p.precio,
     p.oferta,
-    GROUP_CONCAT(DISTINCT e.especificacion SEPARATOR ',') AS especificaciones,
-    GROUP_CONCAT(DISTINCT e.campo SEPARATOR ',') AS especificaciones,
-    GROUP_CONCAT(DISTINCT i.imagen SEPARATOR ',') AS imagenes
+    p.descripcion,
+	GROUP_CONCAT(DISTINCT cp.categoria_id SEPARATOR ',') AS categorias,
+    (select 
+        group_concat(e.especificacion separator ",") as campos
+		from especificaciones e JOIN productos p on p.producto_id= e.producto_id where p.nombre = nombre)as especificaciones,
+	(select 
+        group_concat(e.campo separator ",") as campos
+		from especificaciones e JOIN productos p on p.producto_id= e.producto_id where p.nombre = nombre)as campos ,
+    GROUP_CONCAT(distinct
+        i.imagen ORDER BY CASE WHEN i.tipo = "principal" THEN 1 ELSE 2 END, i.imagen
+    ) AS imagenes
 FROM productos p
 LEFT JOIN imagenes i ON p.producto_id = i.producto_id
-LEFT JOIN especificaciones e ON p.producto_id = e.producto_id
 LEFT JOIN categorias_productos cp ON p.producto_id = cp.producto_id
-WHERE p.nombre = nombre
-GROUP BY p.producto_id;
+WHERE p.nombre = nombre;
 
 END;
 //
 DELIMITER ;
-
-
 
 
 

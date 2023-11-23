@@ -1,11 +1,13 @@
 import { Router } from "express";
 import {
   countProducto,
+  countSearchProducto,
   createProducto,
   getProducto,
   getProductos,
   getProductosDestacados,
   importarProductos,
+  searchProducto,
 } from "../controllers/producto.controllers";
 import { ValidateCreateProducto } from "../validations/producto";
 import { upload } from "../middlewares/uploadFile.middleware";
@@ -28,5 +30,10 @@ router.get("/:nombre", getProducto);
 
 //cantidad
 router.get("/count/:categoria", countProducto);
+
+router.get("/countSearch/:nombre", countSearchProducto);
+
+//buscador
+router.post("/search", searchProducto);
 
 export { router };

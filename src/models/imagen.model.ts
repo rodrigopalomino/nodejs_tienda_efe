@@ -21,6 +21,11 @@ export const Imagen = sequelize.define<ImagenModel>(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    tipo: {
+      type: DataTypes.ENUM("principal", "secundaria"),
+      allowNull: false,
+      defaultValue: "secundaria",
+    },
   },
   {
     freezeTableName: true,

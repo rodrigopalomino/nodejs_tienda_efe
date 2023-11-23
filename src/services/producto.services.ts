@@ -1,3 +1,4 @@
+import { Sequelize, Op } from "sequelize";
 import sequelize from "../db/connection";
 import {
   FetchProducto,
@@ -47,11 +48,16 @@ export const _createProducto = async (
       });
     }
 
+    let isPrinciapl = true;
     for (const imagen of imagenes) {
+      const tipo = isPrinciapl ? "principal" : "secundaria";
+
       await Imagen.create({
         imagen: imagen,
         producto_id: newProducto.producto_id!,
+        tipo,
       });
+      isPrinciapl = false;
     }
 
     for (let i = 0; i < especificaciones.length; i++) {
@@ -76,7 +82,6 @@ export const _importProdcutos = async () => {
   const skuSet = new Set(listSku);
   const skuRepetidos = skuSet.size !== listSku.length;
   const errors: any[] = [];
-  console.log("paso===========");
 
   if (skuRepetidos) {
     return { msg: "sku repetidos", status: 400 };
@@ -165,25 +170,28 @@ export const _importProdcutos = async () => {
       });
     }
 
+    let isPrinciapl = true;
     for (const imagenes of rowData.imagenes) {
       for (const imagen of imagenes) {
+        const tipo = isPrinciapl ? "principal" : "secundaria";
+
         await Imagen.create({
           imagen: imagen,
           producto_id: newProducto.producto_id!,
+          tipo,
         });
+        isPrinciapl = false;
       }
-
-      //
     }
 
-    let is = 1;
+    let is = 0;
     for (const especificacion of rowData.especificaciones!) {
       await Especificacion.create({
         especificacion,
         campo: rowData.campos![is],
         producto_id: newProducto.producto_id!,
       });
-      i++;
+      is++;
     }
   }
   return { msg: "productos importados", status: 200 };
@@ -246,11 +254,25 @@ export const _getProductosDestacados = async (destacado: string) => {
 
 export const _getProducto = async (nombre: string) => {
   try {
-    const consulta = await sequelize.query("Call getProducto(:nombre)", {
+    const consulta: any = await sequelize.query("Call getProducto(:nombre)", {
       replacements: { nombre },
     });
 
-    const item = consulta[0];
+    // const jsonEspecificacion =
+    const item: any = {
+      producto_id: consulta[0].producto_id,
+      sku: consulta[0].sku,
+      marca: consulta[0].marca,
+      nombre: consulta[0].nombre,
+      precio: consulta[0].precio,
+      oferta: consulta[0].oferta,
+      descripcion: consulta[0].descripcion,
+      especificaciones: consulta[0].especificaciones.split(","),
+      campos: consulta[0].campos.split(","),
+      categorias: consulta[0].categorias.split(","),
+      imagenes: consulta[0].imagenes.split(","),
+    };
+
     if (!item) {
       return { item: "no existe", status: 200 };
     }
@@ -269,5 +291,49 @@ export const _countProducto = async (categoria: number) => {
     return { countProductos, status: 200 };
   } catch (error) {
     return { msg: "A ocurrido un error en _getProductos", status: 400 };
+  }
+};
+
+export const _countSearchProducto = async (nombre: string) => {
+  try {
+    const countProductos = await Producto.count({
+      where: {
+        nombre: {
+          [Op.like]: `%${nombre}%`,
+        },
+      },
+    });
+    return { countProductos, status: 200 };
+  } catch (error) {
+    return { msg: "A ocurrido un error en _getProductos", status: 400 };
+  }
+};
+
+export const _searchProducto = async (
+  nombre: string,
+  inicio: number,
+  cantidad: number
+) => {
+  try {
+    const consulta = await sequelize.query(
+      "Call searchProductos(:nombre, :inicio, :cantidad)",
+      { replacements: { nombre, inicio, cantidad } }
+    );
+    const results = consulta as ProductoBaseDatos[];
+
+    const items: FetchProducto[] = results.map((results) => ({
+      producto_id: results.producto_id!,
+      sku: results.sku,
+      marca: results.marca,
+      nombre: results.nombre,
+      precio: results.precio,
+      oferta: results.oferta,
+      categorias: results.categorias.split(","),
+      imagenes: results.imagenes.split(","),
+    }));
+
+    return { items, status: 200 };
+  } catch (error) {
+    return { error, status: 400 };
   }
 };

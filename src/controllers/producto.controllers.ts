@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import {
   _countProducto,
+  _countSearchProducto,
   _createProducto,
   _getProducto,
   _getProductos,
   _getProductosDestacados,
   _importProdcutos,
+  _searchProducto,
 } from "../services/producto.services";
 import { Producto } from "../interfaces/producto";
 
@@ -104,4 +106,23 @@ export const countProducto = async (req: Request, res: Response) => {
   }
 };
 
-export const countProductos = async (req: Request, res: Response) => {};
+export const countSearchProducto = async (req: Request, res: Response) => {
+  const { nombre } = req.params;
+  try {
+    const response = await _countSearchProducto(nombre);
+    res.status(response.status).json(response.countProductos);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+export const searchProducto = async (req: Request, res: Response) => {
+  const { nombre, inicio, cantidad } = req.body;
+
+  try {
+    const response = await _searchProducto(nombre, inicio, cantidad);
+    res.status(response.status).json(response.items);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
